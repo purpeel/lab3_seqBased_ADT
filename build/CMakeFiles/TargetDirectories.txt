@@ -1,8 +1,0 @@
-/home/glebr/prog/kaf22/sem2/lab3/build/CMakeFiles/lab3_main.dir
-/home/glebr/prog/kaf22/sem2/lab3/build/CMakeFiles/test.dir
-/home/glebr/prog/kaf22/sem2/lab3/build/CMakeFiles/edit_cache.dir
-/home/glebr/prog/kaf22/sem2/lab3/build/CMakeFiles/rebuild_cache.dir
-/home/glebr/prog/kaf22/sem2/lab3/build/tests/CMakeFiles/run_all_tests.dir
-/home/glebr/prog/kaf22/sem2/lab3/build/tests/CMakeFiles/test.dir
-/home/glebr/prog/kaf22/sem2/lab3/build/tests/CMakeFiles/edit_cache.dir
-/home/glebr/prog/kaf22/sem2/lab3/build/tests/CMakeFiles/rebuild_cache.dir
