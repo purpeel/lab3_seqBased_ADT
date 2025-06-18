@@ -2,8 +2,7 @@
 #define SEQUENCE_H
 
 #include "util.hpp"
-#include <variant>
-#include <concepts>
+#include <functional>
 
 template <typename T>
 class Sequence 
@@ -25,13 +24,21 @@ public:
     virtual Sequence<T>* getSubSequence( const int startIndex, const int endIndex ) const = 0;
     virtual Sequence<T>* concat( const Sequence<T>& other ) = 0;
 public:
+    virtual void map( T (*func)(const T& value) ) = 0;
+    virtual void where( bool (*func)(const T& value) ) = 0;
+
+    virtual T foldl( T (*func)( const T& arg1, const T& arg2 ), const T& base ) const = 0;
+    virtual T foldr( T (*func)( const T& arg1, const T& arg2 ), const T& base ) const = 0;
+    virtual T foldl( T (*func)( const T& arg1, const T& arg2 ) ) const = 0;
+    virtual T foldr( T (*func)( const T& arg1, const T& arg2 ) ) const = 0;
+public:
     virtual T& operator[]( const int pos ) = 0;
     virtual const T& operator[]( const int pos ) const = 0;
 public:
     virtual const bool isEmpty() const = 0;
     virtual const int getSize() const = 0;
 public: 
-    virtual const std::string print() const = 0;
+    // virtual const std::string print() const = 0;
 public: // immutable functions
     virtual Sequence<T>* appendImmutable( const T& value ) const = 0;
     virtual Sequence<T>* prependImmutable( const T& value ) const = 0;
@@ -40,18 +47,21 @@ public: // immutable functions
     virtual Sequence<T>* setAtImmutable( const T& value, const int pos ) const = 0;
     virtual Sequence<T>* swapImmutable( const int pos1, const int pos2 ) const = 0;
     virtual Sequence<T>* concatImmutable( const Sequence<T>& other ) const = 0;
+public: 
+    virtual Sequence<T>* mapImmutable( T (*func)(const T& value) ) const = 0;
+    virtual Sequence<T>* whereImmutable( bool (*func)(const T& value) ) const = 0;
 };
 
-enum SequenceType
-{
-    LIST,
-    ARRAY
-};
+// enum SequenceType
+// {
+//     LIST,
+//     ARRAY
+// };
 
-enum VarType
-{
-    INT,
-    DOUBLE
-};
+// enum VarType
+// {
+//     INT,
+//     DOUBLE
+// };
 
 #endif // SEQUENCE_H

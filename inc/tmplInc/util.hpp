@@ -19,10 +19,11 @@ public:
         UNEXPECTED_NULLPTR = 2,
         UNEXPECTED_CHAR = 3,
         INDEX_OUT_OF_BOUNDS = 4,
-        EMPTY_ARRAY = 5,
+        EMPTY_STRUCTURE = 5,
         NEGATIVE_SIZE_DIFFERENCE = 6,
         INVALID_SELECTION = 7,
-        EMPTY_INPUT = 8
+        EMPTY_INPUT = 8,
+        INVALID_SIZE = 9
     };
 public:
     explicit Exception( std::exception& ex ) : ex(ex) {
@@ -52,8 +53,8 @@ public:
         case ErrorCode::INDEX_OUT_OF_BOUNDS:
             this->message = "Error. Index out of bounds.";
             break;
-        case ErrorCode::EMPTY_ARRAY:
-            this->message = "Error. Unable to delete from empty sequence.";
+        case ErrorCode::EMPTY_STRUCTURE:
+            this->message = "Error. Unable to process empty data structure.";
             break;
         case ErrorCode::NEGATIVE_SIZE_DIFFERENCE:
             this->message = "Error. Size difference cannot be negative.";
@@ -66,6 +67,9 @@ public:
             break;
         case ErrorCode::EMPTY_INPUT:
             this->message = "Error. Make sure you've provided all neccessary input.";
+            break;
+        case ErrorCode::INVALID_SIZE:
+            this->message = "Error. Invalid size.";
             break;
         default:
             this->message = "Unknown error.";

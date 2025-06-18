@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/lab3_main.dir/src/console/main.cpp.o CMakeFiles/lab3_main.dir/src/tmpl/Hanoi.cpp.o -o lab3_main 
