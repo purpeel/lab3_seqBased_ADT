@@ -2,213 +2,90 @@
 #include <cstdlib>
 
 template <typename T>
-Flist<T>::Flist() {
-    this->_head = nullptr;
-    this->_tail = nullptr;
-    this->size = 0;
-}
+Flist<T>::Flist() : _head(), _tail(), size(0) {}
 
 template <typename T>
-Flist<T>::Flist( const Flist<T>& other) {
-    try {
-        if ( other.isEmpty() ) {
-            this->_head = nullptr;
-            this->_tail = nullptr;
-            this->size  = 0;
-            return;
-        }
-        this->_head = new T( *other._head );
-        this->_tail = new Flist<T>( *other._tail );
-        this->size = other.size;
-    } catch ( std::bad_alloc& ex ) {
-        throw Exception(ex);
-    }
-}
-
-template <typename T>
-Flist<T>& Flist<T>::operator=( const Flist<T>& other ) {
-    try {
-        if ( this == &other ) return *this;
-
-        if ( other.isEmpty() ) {
-            this->_head = nullptr;
-            this->_tail = nullptr;
-            this->size  = 0;
-            return *this;
-        }
-        this->_head = new T( *other._head );
-        this->_tail = new Flist<T>( *other._tail );
-        this->size = other.size;
-
-        return *this;
-    } catch ( std::bad_alloc& ex ) {
-        throw Exception(ex);
-    }
-}
+Flist<T>::Flist( const T& head, Flist<T>* tail ) 
+    : _head( head ), 
+      _tail( tail ), 
+       size( tail->getSize() + 1) {}
 
 template <typename T>
 Flist<T>::Flist( Flist<T>&& other ) {
-    this->_head = other._head;
+    this->_head = std::move( other._head );
     this->_tail = other._tail;
-    this->size  = other.size;
-
-    other._head = nullptr;
+    this->size = other.size;
+     
     other._tail = nullptr;
-    other.size  = 0;
+    other.size = 0;
 }
 
 template <typename T>
 Flist<T>& Flist<T>::operator=( Flist<T>&& other ) {
-    if ( this == &other ) return *this;
-
-    this->_head = other._head;
-    this->_tail = other._tail;
-    this->size  = other.size;
-
-    other._head = nullptr;
+    if ( this == &other ) { return *this; }
+    this->_head = std::move( other._head );
+    this->_tail = other._tail; 
+    this->size = other.size;
+     
     other._tail = nullptr;
-    other.size  = 0;
+    other.size = 0;
 
     return *this;
 }
 
 template <typename T>
-Flist<T>::Flist( const T& value ) {
-    try {
-        this->_head = new T(value);
-        this->_tail = new Flist<T>();
-        this->size = 1;
-    } catch ( std::bad_alloc& ex ) {
-        throw Exception(ex);
+Flist<T>* Flist<T>::clone() const {
+    auto* res = new Flist<T>();
+    for ( int index = this->getSize() - 1; index >= 0; index-- ) {
+        res = res->cons( (*this)[index] );
     }
-}
-
-template <typename T>
-Flist<T>* Flist<T>::FlistOfSize( const int size ) const {
-    try {
-        auto list = new Flist<T>();
-        auto current = list;
-        while ( list->getSize() < size ) {
-            current->_head = new T();
-            current->_tail = new Flist<T>();
-            current = current->_tail;
-            list->size++;
-        }
-
-        return list;
-    } catch ( std::bad_alloc& ex ) {
-        throw Exception(ex);
-    }
+    
+    return res;
 }
 
 template <typename T>
 Flist<T>::~Flist() {
-    delete this->_head;
+    this->_head.~Option();
     delete this->_tail;
 }
 
 template <typename T>
-T& Flist<T>::head() const {
-    if ( this->isEmpty() ) {
-        throw Exception( Exception::ErrorCode::EMPTY_STRUCTURE );
-    }
-    return *this->_head;
-}
-
-template <typename T>
-T& Flist<T>::last() const {
-    if ( this->isEmpty() ) {
-        throw Exception( Exception::ErrorCode::EMPTY_STRUCTURE );
-    }
-
-    auto current = this;
-    while ( !current->_tail->isEmpty() ) { 
-        current = current->_tail;
-    }
-
-    return *current->_head;
-}
-
-template <typename T>
-Flist<T>* Flist<T>::tail() const {
-    if ( this->isEmpty() ) {
-        throw Exception( Exception::ErrorCode::EMPTY_STRUCTURE );
-    }
-    return new Flist<T>( *this->_tail );
-}
-
-template <typename T>
-Flist<T>* Flist<T>::init() const {
-    if ( this->isEmpty() ) {
-        throw Exception( Exception::ErrorCode::EMPTY_STRUCTURE );
-    }
-
+const T& Flist<T>::head() const {
     try {
-        auto list = new Flist<T>();
-        auto other = this;
-        for ( int index = other->getSize() - 2; index >= 0; index-- ) {
-            list = list->cons( (*other)[index] );
-        }
-        return list;
+        return this->_head.get();
     } catch ( Exception& ex ) {
         throw ex;
     }
 }
 
 template <typename T>
-Flist<T>* Flist<T>::cons( const T& value ) {
+const T& Flist<T>::last() const {
     try {
-        auto list = new Flist<T>( value );
-        list->_tail = this;
-        list->size = this->size + 1;
-        return list;
-    } catch ( std::bad_alloc& ex ) {
-        throw Exception(ex);
-    }
-}
-
-template <typename T>
-void Flist<T>::reverse() {
-    try { 
-        if ( this->isEmpty() ) {
-            return;
-        }
-        auto newHead = this->last();
-        auto newTail = this->init();
-        newTail->reverse();
-
-        delete this->_head;
-        delete this->_tail;
-
-        this->_head = new T( newHead );
-        this->_tail = newTail;
-
+        if ( this->_tail->isEmpty() ) { return this->head(); }
+        return this->_tail->last();
     } catch ( Exception& ex ) {
-        throw Exception(ex);
+        throw ex;
     }
 }
 
 template <typename T>
-Flist<T>* Flist<T>::swap( const int pos1, const int pos2 ) const {
-    if ( pos1 < 0 || pos1 >= this->getSize() ||
-         pos2 < 0 || pos2 >= this->getSize() ) {
-            throw Exception( Exception::ErrorCode::INDEX_OUT_OF_BOUNDS );
-        }
+Flist<T>* Flist<T>::tail() const {
+    return this->_tail;
+}
+
+template <typename T>
+Flist<T>* Flist<T>::init() const {
     try {
-        auto list = new Flist<T>();
+        auto* res = new Flist<T>();
+        
+        if ( this->getSize() == 1 ) { return res; }
+        else if ( this->getSize() == 2 ) { return res->cons( this->head() ); }
 
-        for ( int index = 0; index < this->getSize(); index++ ) {
-            if ( index != pos1 && index != pos2 ) {
-                list = list->cons( (*this)[index] );
-            } else if ( index == pos1 ) {
-                list = list->cons( (*this)[pos2] );
-            } else if ( index == pos2 ) {
-                list = list->cons( (*this)[pos1] );
-            }
+        for ( int index = this->getSize() - 2; index >= 0; index-- ) {
+            res = res->cons( (*this)[index] );
         }
-
-        list->reverse();
-        return list;
+        
+        return res;
     } catch ( Exception& ex ) {
         throw ex;
     }
@@ -216,50 +93,32 @@ Flist<T>* Flist<T>::swap( const int pos1, const int pos2 ) const {
 
 template <typename T>
 std::tuple<T, Flist<T>*> Flist<T>::uncons() const {
-    if ( this->isEmpty() ) {
-        throw Exception( Exception::ErrorCode::EMPTY_STRUCTURE );
+    try {
+        return std::make_tuple( this->head(), this->tail() );
+    } catch ( Exception& ex ) {
+        throw ex;
     }
-
-    return std::make_tuple( *this->_head, this->_tail );
 }
 
 template <typename T>
 std::tuple<Flist<T>*, T> Flist<T>::unsnoc() const {
-    if ( this->isEmpty() ) {
-        throw Exception( Exception::ErrorCode::EMPTY_STRUCTURE );
-    }
-
-    return std::make_tuple( this->init(), this->last() );
-}
-
-template <typename T>
-Flist<T>* Flist<T>::concat( const Flist<T>& other ) const {
     try {
-        auto res = new Flist<T>( *this );
-        res->reverse();
-
-        for ( int index = 0; index < other.getSize(); index++ ) {
-            res = res->cons( other[index] );
-        }
-
-        res->reverse();
-        return res;
-    
+        return std::make_tuple( this->init(), this->last() );
     } catch ( Exception& ex ) {
-        throw Exception(ex);
+        throw ex;
     }
 }
 
 template <typename T>
-Flist<T>* Flist<T>::getSubFlist( const int startIndex, const int endIndex ) const {
+Flist<T>* Flist<T>::getSubList( const int startIndex, const int endIndex ) const {
     if ( startIndex < 0                || endIndex < 0 ||
-         startIndex >= this->getSize() || endIndex >= this->getSize() ||
+         startIndex >= this->getSize() || endIndex > this->getSize() ||
          startIndex > endIndex ) {
             throw Exception( Exception::ErrorCode::INDEX_OUT_OF_BOUNDS );
         }
     
     try {
-        auto sub = new Flist<T>();
+        Flist<T>* sub = new Flist<T>();
         for ( int index = this->getSize() - 1; index >= 0; index-- ) {
             if ( index >= startIndex && index < endIndex ) {
                 sub = sub->cons( (*this)[index] );
@@ -272,33 +131,31 @@ Flist<T>* Flist<T>::getSubFlist( const int startIndex, const int endIndex ) cons
 }
 
 template <typename T>
-Flist<T>* Flist<T>::map( T (*func)( const T& value ) ) const {
-    try {
-        auto res = new Flist<T>( *this );
-        if ( this->isEmpty() ) return res;
-        *res->_head = func( *this->_head );
-        res->_tail = this->_tail->map( func );
-        return res;
-    } catch ( Exception& ex ) {
-        throw Exception(ex);
+T& Flist<T>::operator[]( const int pos ) {
+    if ( pos < 0 || pos >= this->getSize() ) {
+        throw Exception( Exception::ErrorCode::INDEX_OUT_OF_BOUNDS );
     }
+
+    auto* current = this;
+    for ( int index = 0; index < pos; index++ ) {
+        current = current->_tail;
+    }
+
+    return current->_head.get();
 }
 
 template <typename T>
-Flist<T>* Flist<T>::where( bool (*func)( const T& value ) ) const {
-    try {
-        auto res = new Flist<T>();
-        for ( int index = 0; index < this->getSize(); index++ ) {
-            if ( func( (*this)[index] ) ) {
-                res = res->cons( (*this)[index] );
-            }
-        }
-
-        res->reverse();
-        return res;
-    } catch ( Exception& ex ) {
-        throw Exception(ex);
+const T& Flist<T>::operator[]( const int pos ) const {
+    if ( pos < 0 || pos >= this->getSize() ) {
+        throw Exception( Exception::ErrorCode::INDEX_OUT_OF_BOUNDS );
     }
+
+    auto* current = this;
+    for ( int index = 0; index < pos; index++ ) {
+        current = current->_tail;
+    }
+
+    return current->_head.get();
 }
 
 template <typename T>
@@ -319,7 +176,7 @@ template <typename T>
 T Flist<T>::foldr( T (*func)( const T& arg1, const T& arg2 ), const T& base ) const {
     try {
         T res = base;
-        for ( int index = this->getSize() - 1; index >= 0; index++ ) {
+        for ( int index = this->getSize() - 1; index >= 0; index-- ) {
             res = func( res, (*this)[index] );
         }
 
@@ -355,7 +212,7 @@ T Flist<T>::foldr( T (*func)( const T& arg1, const T& arg2 ) ) const {
 
     try {
         T res = (*this)[this->getSize() - 1];
-        for ( int index = this->getSize() - 2; index >= 0; index++ ) {
+        for ( int index = this->getSize() - 2; index >= 0; index-- ) {
             res = func( res, (*this)[index] );
         }
 
@@ -366,46 +223,103 @@ T Flist<T>::foldr( T (*func)( const T& arg1, const T& arg2 ) ) const {
 }
 
 template <typename T>
-T& Flist<T>::operator[]( const int pos ) {
-    if ( this->isEmpty() ) {
-        throw Exception( Exception::ErrorCode::EMPTY_STRUCTURE );
-    } else if ( pos < 0 || pos >= this->getSize() ) {
-        throw Exception( Exception::ErrorCode::INDEX_OUT_OF_BOUNDS );
+Flist<T>* Flist<T>::cons(const T& value) const {
+    try {
+        auto* newTail = this->clone();
+        return new Flist<T>( value, newTail ); 
+    } catch ( Exception& ex ) {
+        throw ex;
     }
-
-    auto current = this;
-    for ( int index = 0; index < pos; index++ ) {
-        current = current->_tail;
-    }
-
-    return *current->_head;
 }
 
 template <typename T>
-const T& Flist<T>::operator[]( const int pos ) const {
-    if ( this->isEmpty() ) {
-        throw Exception( Exception::ErrorCode::EMPTY_STRUCTURE );
-    } else if ( pos < 0 || pos >= this->getSize() ) {
-        throw Exception( Exception::ErrorCode::INDEX_OUT_OF_BOUNDS );
-    }
+Flist<T>* Flist<T>::swap( const int pos1, const int pos2 ) const {
+    if ( pos1 < 0 || pos1 >= this->getSize() ||
+         pos2 < 0 || pos2 >= this->getSize() ) {
+            throw Exception( Exception::ErrorCode::INDEX_OUT_OF_BOUNDS );
+        }
+    try {
+        Flist<T>* res = new Flist<T>();
 
-    auto current = this;
-    for ( int index = 0; index < pos; index++ ) {
-        current = current->_tail;
-    }
+        for ( int index = this->getSize() - 1; index >= 0; index-- ) {
+            if ( index != pos1 && index != pos2 ) {
+                res = res->cons( (*this)[index] );
+            } else if ( index == pos1 ) {
+                res = res->cons( (*this)[pos2] );
+            } else if ( index == pos2 ) {
+                res = res->cons( (*this)[pos1] );
+            }
+        }
 
-    return *current->_head;
+        return res;
+    } catch ( Exception& ex ) {
+        throw ex;
+    }
+}
+
+template <typename T>
+Flist<T>* Flist<T>::reverse() const {
+    try {
+        Flist<T>* res = new Flist<T>();
+
+        for ( int index = 0; index < this->getSize(); index++ ) {
+            res = res->cons( (*this)[index] );
+        }
+
+        return res;
+    } catch ( Exception& ex ) {
+        throw ex;
+    }
+}
+
+template <typename T>
+Flist<T>* Flist<T>::concat( const Flist<T>& other ) const {
+    try {
+        Flist<T>* res = other.clone();
+
+        for ( int index = this->getSize() - 1; index >= 0; index-- ) {
+            res = res->cons( (*this)[index] );
+        }
+
+        return res;
+    } catch ( Exception& ex ) {
+        throw ex;
+    }
+}
+
+template <typename T>
+Flist<T>* Flist<T>::map( T (*func)( const T& value ) ) const {
+    try {
+        if ( this->isEmpty() ) { return new Flist<T>(); }
+
+        auto* mappedTail = this->_tail->map(func);
+
+        return new Flist<T>( func( this->head() ), mappedTail );
+    } catch ( Exception& ex ) {
+        throw ex;
+    }
+}
+
+template <typename T>
+Flist<T>* Flist<T>::where( bool (*func)( const T& value ) ) const {
+    try {
+        Flist<T>* res = new Flist<T>();
+
+        for ( int index = this->getSize() - 1; index >= 0; index-- ) {
+            if ( func( (*this)[index] ) ) {
+                res = res->cons( (*this)[index] );
+            }
+        }
+
+        return res;
+    } catch ( Exception& ex ) {
+        throw ex;
+    }
 }
 
 template <typename T>
 const bool Flist<T>::isEmpty() const {
-    auto current = this;
-    for ( int index = 0; index < this->getSize(); index++ ) {
-        if ( current->_head != nullptr ) return false;
-        current = current->_tail;
-    }
-
-    return true;
+    return !this->_head.hasValue();
 }
 
 template <typename T>

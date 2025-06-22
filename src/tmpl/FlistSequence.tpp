@@ -5,15 +5,25 @@ template <typename T>
 FlistSequence<T>::FlistSequence() : list() {}
 
 template <typename T>
-FlistSequence<T>::FlistSequence( const Flist<T>& src ) : list( src ) {}
+FlistSequence<T>::FlistSequence( const Flist<T>& src ) {
+    auto* res = src.clone();
+    this->list = std::move(*res);
+    delete res;
+}
 
 template <typename T>
-FlistSequence<T>::FlistSequence( const FlistSequence<T>& src ) : list( src.list ) {}
+FlistSequence<T>::FlistSequence( const FlistSequence<T>& src ) {
+    auto* res = src.list.clone();
+    this->list = std::move(*res);
+    delete res;
+}
 
 template <typename T>
 FlistSequence<T>& FlistSequence<T>::operator=( const Flist<T>& src ) {
-    if ( this != &src ) {
-        this->list = src;
+    if ( this->list != &src ) {
+        auto* res = src.clone();
+        this->list = std::move(*res);
+        delete res;
     }
     return *this;
 }
@@ -21,31 +31,35 @@ FlistSequence<T>& FlistSequence<T>::operator=( const Flist<T>& src ) {
 template <typename T>
 FlistSequence<T>& FlistSequence<T>::operator=( const FlistSequence<T>& src ) {
     if ( this != &src ) {
-        this->list = src.list;
+        auto* res = src.list.clone();
+        this->list = std::move(*res);
+        delete res;
     }
     return *this;
 }
 
 template <typename T>
-FlistSequence<T>::FlistSequence( Flist<T>&& src ) : list( std::move( src ) ) {}
+FlistSequence<T>::FlistSequence( Flist<T>&& src ) {
+    this->list = std::move(src);
+}
 
 template <typename T>
-FlistSequence<T>::FlistSequence( FlistSequence<T>&& src ) : list( std::move( src.list ) ) {}
+FlistSequence<T>::FlistSequence( FlistSequence<T>&& src ) {
+    this->list = std::move(src.list);
+}
 
 template <typename T>
 FlistSequence<T>& FlistSequence<T>::operator=( Flist<T>&& src ) {
-    if ( this != &src ) {
-        this->list.~Flist();
-        this->list = std::move( src );
-    }
+    this->clear();
+    this->list = std::move(src);
     return *this;
 }
 
 template <typename T>
 FlistSequence<T>& FlistSequence<T>::operator=( FlistSequence<T>&& src ) {
     if ( this != &src ) {
-        this->list.~Flist();
-        this->list = std::move( src.list );
+        this->clear();
+        this->list = std::move(src.list);
     }
     return *this;
 }
@@ -62,10 +76,9 @@ Sequence<T>* FlistSequence<T>::clone() const {
 template <typename T>
 void FlistSequence<T>::copy( const Sequence<T>& src ) {
     try {
-        this->list.~Flist();
-        this->list = *new Flist<T>();
-        for ( int index = src.getSize() - 1; index >= 0; index-- ) {
-            this->list.cons( src[index] );
+        this->clear();
+        for ( int index = 0; index < src.getSize(); index++ ) {
+            this->append( src[index] );
         }
     } catch ( Exception& ex ) {
         throw Exception(ex);
@@ -77,16 +90,21 @@ FlistSequence<T>::~FlistSequence() {}
 
 template <typename T>
 void FlistSequence<T>::clear() {
-    this->list.~Flist();
-    this->list = *new Flist<T>();
+    list.~Flist();
+    auto* empty = new Flist<T>();
+    list = std::move(*empty);
+    delete empty;
 }
 
 template <typename T>
 void FlistSequence<T>::append( const T& value ) {
     try {
-        this->list.reverse();
-        this->list = *this->list.cons( value );
-        this->list.reverse();
+        auto* singleton = new Flist<T>( value, new Flist<T>() );
+        auto* temp = this->list.concat( *singleton );
+        this->clear();
+        this->list = std::move( *temp );
+        delete temp;
+        delete singleton;
     } catch ( Exception& ex ) {
         throw Exception(ex);
     }
@@ -95,13 +113,10 @@ void FlistSequence<T>::append( const T& value ) {
 template <typename T>
 void FlistSequence<T>::prepend( const T& value ) {
     try {
-        // this->list = *this->list.cons( value );
-        auto newew = this->list.cons( value );
-        for ( int i = 0; i < newew->getSize(); i++ ) {
-            std::cout << (*newew)[i] << std::endl;
-        }
-        std::cout << std::endl;
-        this->list = *newew;
+        auto* temp = this->list.cons( value );
+        this->clear();
+        this->list = std::move( *temp );
+        delete temp;
     } catch ( Exception& ex ) {
         throw Exception(ex);
     }
@@ -115,16 +130,21 @@ void FlistSequence<T>::insertAt( const T& value, const int pos ) {
 
     try {
         if ( pos == 0 ) {
-            this->list.cons( value );
+            this->append( value );
         } else if ( pos == this->list.getSize() ) {
-            this->prepend( value );
+            this->append( value );
         } else {
-            Flist<T>* temp1 = this->list.getSubFlist( 0, pos );
-            Flist<T>* temp2 = this->list.getSubFlist( pos, this->list.getSize() );
-            temp2->cons( value );
-            this->clear();
-            this->list = *temp1->concat( *temp2 );
-            delete temp2;
+            auto* tail = list.getSubList(pos, list.getSize());
+            auto* newTail = tail->cons(value);
+            
+            auto* head = list.getSubList(0, pos); 
+            auto* result = head->concat(*newTail);
+            
+            this->list = std::move( *result );
+            
+            delete newTail;
+            delete head;
+            delete result;
         }
     } catch ( Exception& ex ) {
         throw Exception(ex);
@@ -138,12 +158,15 @@ void FlistSequence<T>::removeAt( const int pos ) {
     }
     
     try {
-        Flist<T>* temp1 = this->list.getSubFlist( 0, pos );
-        Flist<T>* temp2 = this->list.getSubFlist( pos, this->list.getSize() );
+        auto* temp1 = this->list.getSubList( 0, pos );
+        auto* temp2 = this->list.getSubList( pos, this->list.getSize() );
         std::tuple<T, Flist<T>*> tup = temp2->uncons();
         auto& [val, rest] = tup;
         this->clear();
-        this->list = *temp1->concat( *rest );
+        auto* res = temp1->concat( *rest );
+        this->list = std::move( *res );
+        delete res;
+        delete temp1;
         delete temp2;
     } catch ( Exception& ex ) {
         throw Exception(ex);
@@ -157,13 +180,16 @@ void FlistSequence<T>::setAt( const T& value, const int pos ) {
     }
     
     try {
-        Flist<T>* temp1 = this->list.getSubFlist( 0, pos );
-        Flist<T>* temp2 = this->list.getSubFlist( pos, this->list.getSize() );
+        auto* temp1 = this->list.getSubList( 0, pos );
+        auto* temp2 = this->list.getSubList( pos, this->list.getSize() );
         std::tuple<T, Flist<T>*> tup = temp2->uncons();
         auto& [val, rest] = tup;
-        rest->cons( value );
+        rest = rest->cons(value);
         this->clear();
-        this->list = *temp1->concat( *rest );
+        auto* res = temp1->concat( *rest );
+        this->list = std::move( *res );
+        delete res;
+        delete temp1;
         delete temp2;
     } catch ( Exception& ex ) {
         throw Exception(ex);
@@ -173,8 +199,10 @@ void FlistSequence<T>::setAt( const T& value, const int pos ) {
 template <typename T>
 void FlistSequence<T>::swap( const int pos1, const int pos2 ) {
     try {
-        Flist<T>* res = this->list.swap( pos1, pos2 );
-        this->list = *res;
+        auto* res = this->list.swap( pos1, pos2 );
+        this->clear();
+        this->list = std::move( *res );
+        delete res;
     } catch ( Exception& ex ) {
         throw ex;
     }
@@ -183,7 +211,10 @@ void FlistSequence<T>::swap( const int pos1, const int pos2 ) {
 template <typename T>
 Sequence<T>* FlistSequence<T>::getSubSequence( const int startIndex, const int endIndex ) const {
     try {
-        return new FlistSequence<T>( *this->list.getSubFlist( startIndex, endIndex ) );
+        auto* subFlist = this->list.getSubList(startIndex, endIndex);
+        auto* res = new FlistSequence<T>( *subFlist );
+        delete subFlist;
+        return res;
     } catch ( Exception& ex ) {
         throw ex;
     } 
@@ -204,9 +235,10 @@ Sequence<T>* FlistSequence<T>::concat( const Sequence<T>& other ) {
 template <typename T>
 void FlistSequence<T>::map( T (*func)(const T& value) ) {
     try {
-        Flist<T>* list = this->list.map( func );
+        auto* list = this->list.map( func );
         this->clear();
-        this->list = *list;
+        this->list = std::move( *list );
+        delete list;
     } catch ( Exception& ex ) {
         throw ex;
     }
@@ -215,9 +247,10 @@ void FlistSequence<T>::map( T (*func)(const T& value) ) {
 template <typename T>
 void FlistSequence<T>::where( bool (*func)( const T& value ) ) {
     try {
-        Flist<T>* list = this->list.where( func );
+        auto* res = this->list.where( func );
         this->clear();
-        this->list = *list;
+        this->list = std::move( *res );
+        delete res;
     } catch ( Exception& ex ) {
         throw ex;
     }
@@ -261,12 +294,12 @@ T FlistSequence<T>::foldr(  T (*func)( const T& arg1, const T& arg2 ) ) const {
 
 template <typename T>
 T& FlistSequence<T>::operator[]( const int pos ) {
-    return this->list[pos];
+    return this->list.operator[](pos);
 }
 
 template <typename T>
 const T& FlistSequence<T>::operator[]( const int pos ) const {
-    return this->list[pos];
+    return this->list.operator[](pos);
 }
 
 template <typename T>

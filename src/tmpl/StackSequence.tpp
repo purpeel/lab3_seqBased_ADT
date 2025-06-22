@@ -310,7 +310,7 @@ template <typename T>
 Sequence<T>* StackSequence<T>::insertAtImmutable( const T& value, const int pos ) const {
     try {
         StackSequence<T>* res = new StackSequence<T>( *this );
-        res->insertAt( pos, value );
+        res->insertAt( value, pos );
         return res;
     } catch ( Exception& ex ) {
         throw Exception(ex);

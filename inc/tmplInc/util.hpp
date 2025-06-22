@@ -23,7 +23,8 @@ public:
         NEGATIVE_SIZE_DIFFERENCE = 6,
         INVALID_SELECTION = 7,
         EMPTY_INPUT = 8,
-        INVALID_SIZE = 9
+        INVALID_SIZE = 9,
+        EMPTY_OPTION = 10
     };
 public:
     explicit Exception( std::exception& ex ) : ex(ex) {
@@ -71,6 +72,8 @@ public:
         case ErrorCode::INVALID_SIZE:
             this->message = "Error. Invalid size.";
             break;
+        case ErrorCode::EMPTY_OPTION:
+            this->message = "Error. Optional type is undefined.";
         default:
             this->message = "Unknown error.";
             break;
