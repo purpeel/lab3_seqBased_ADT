@@ -7,20 +7,403 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>585</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>9</y>
+      <width>781</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="7">
+     <item>
+      <widget class="QGroupBox" name="Sequences">
+       <property name="title">
+        <string>Sequences</string>
+       </property>
+       <widget class="QPushButton" name="createBtn">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>20</y>
+          <width>101</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Create</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="deleteBtn">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>20</y>
+          <width>101</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Delete</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="varType">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>20</y>
+          <width>101</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="currentText">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>Content type</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Integer</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Double</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>String</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Person</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QComboBox" name="containerType">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>20</y>
+          <width>101</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="currentText">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>Container type</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Flist</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Stack</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QListWidget" name="seqList">
+        <property name="geometry">
+         <rect>
+          <x>5</x>
+          <y>61</y>
+          <width>531</width>
+          <height>461</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="Operations">
+        <property name="geometry">
+         <rect>
+          <x>540</x>
+          <y>0</y>
+          <width>231</width>
+          <height>529</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Operations</string>
+        </property>
+        <widget class="QPushButton" name="appendBtn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>140</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Append</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="prependBtn">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>140</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Prepend</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="insertAtBtn">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>180</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>InsertAt</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="removeAtBtn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>180</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>RemoveAt</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="setAtBtn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>220</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>SetAt</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="valueInput">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>60</y>
+           <width>211</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="placeholderText">
+          <string>Enter value</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="index1Input">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>100</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="placeholderText">
+          <string>Enter 1st index</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="index2Input">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>100</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="placeholderText">
+          <string>Enter 2nd index</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="swapBtn">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>220</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Swap</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="isImmutable">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>85</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Immutable</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="copyBtn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>340</y>
+           <width>211</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Copy</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="subSeqBtn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>300</y>
+           <width>211</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Get Subsequence</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="concatBtn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>260</y>
+           <width>211</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Concat</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="FoldRBtn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>460</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>FoldR</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="whereBtn">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>420</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Where</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="mapBtn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>420</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Map</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="FoldLBtn">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>460</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>FoldL</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="mapFunc">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>380</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="whereFunc">
+         <property name="geometry">
+          <rect>
+           <x>118</x>
+           <y>380</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <item>
+          <property name="text">
+           <string>where:isEven()</string>
+          </property>
+         </item>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

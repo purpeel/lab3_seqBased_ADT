@@ -3,6 +3,7 @@
 
 #include "Sequence.hpp"
 #include "util.hpp"
+#include "person.hpp"
 #include <tuple>
 #include <type_traits>
 
@@ -12,6 +13,7 @@ public:
     virtual ~ICollection() = default;
 public:
     VarType typeId;
+public:
     virtual bool isEmpty() const = 0;
     virtual int getSize() const = 0;
     virtual std::string print() const = 0;
@@ -22,6 +24,10 @@ public:
             typeId = VarType::INT;
         } else if constexpr (std::is_same_v<T, double>) {
             typeId = VarType::DOUBLE;
+        } else if constexpr (std::is_same_v<T, std::string>) {
+            typeId = VarType::STRING;
+        } else if constexpr (std::is_same_v<T, Person>) {
+            typeId = VarType::PERSON;
         }
     }
 };

@@ -22,7 +22,7 @@ public:
         EMPTY_STRUCTURE = 5,
         NEGATIVE_SIZE_DIFFERENCE = 6,
         INVALID_SELECTION = 7,
-        EMPTY_INPUT = 8,
+        INVALID_INPUT = 8,
         INVALID_SIZE = 9,
         EMPTY_OPTION = 10
     };
@@ -66,8 +66,8 @@ public:
         case ErrorCode::INVALID_SELECTION:
             this->message = "Error. Make sure you've correctly selected an item.";
             break;
-        case ErrorCode::EMPTY_INPUT:
-            this->message = "Error. Make sure you've provided all neccessary input.";
+        case ErrorCode::INVALID_INPUT:
+            this->message = "Error. Make sure you've correctly provided all neccessary input.";
             break;
         case ErrorCode::INVALID_SIZE:
             this->message = "Error. Invalid size.";

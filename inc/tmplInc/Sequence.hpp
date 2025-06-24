@@ -38,7 +38,7 @@ public:
     virtual const bool isEmpty() const = 0;
     virtual const int getSize() const = 0;
 public: 
-    // virtual const std::string print() const = 0;
+    virtual const std::string print() const = 0;
 public: // immutable functions
     virtual Sequence<T>* appendImmutable( const T& value ) const = 0;
     virtual Sequence<T>* prependImmutable( const T& value ) const = 0;
@@ -52,16 +52,18 @@ public:
     virtual Sequence<T>* whereImmutable( bool (*func)(const T& value) ) const = 0;
 };
 
-// enum SequenceType
-// {
-//     LIST,
-//     ARRAY
-// };
+enum SequenceType
+{
+    FLIST,
+    STACK
+};
 
-// enum VarType
-// {
-//     INT,
-//     DOUBLE
-// };
+enum VarType
+{
+    INT,
+    DOUBLE,
+    STRING,
+    PERSON
+};
 
 #endif // SEQUENCE_H

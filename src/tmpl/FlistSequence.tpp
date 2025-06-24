@@ -410,3 +410,14 @@ Sequence<T>* FlistSequence<T>::whereImmutable( bool (*func)( const T& value ) ) 
         throw ex;
     }
 }
+
+template <typename T>
+const std::string FlistSequence<T>::print() const {
+    std::ostringstream out;
+    out << "{";
+    for ( int index = 0; index < this->getSize(); index++ ) {
+        out << this->operator[](index) << " ";
+    }
+    out << "}";
+    return out.str();
+}

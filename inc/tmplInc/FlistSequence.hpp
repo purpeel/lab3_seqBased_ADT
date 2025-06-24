@@ -60,7 +60,7 @@ public:
     Sequence<T>* mapImmutable( T (*func)(const T& value) ) const override;
     Sequence<T>* whereImmutable( bool (*func)(const T& value) ) const override;
 public:
-    // const std::string print() const override;
+    const std::string print() const override;
 private:
     Flist<T> list;
 };

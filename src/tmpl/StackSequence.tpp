@@ -382,3 +382,14 @@ Sequence<T>* StackSequence<T>::whereImmutable( bool (*func)( const T& value ) ) 
         throw Exception(ex);
     }
 }
+
+template <typename T>
+const std::string StackSequence<T>::print() const {
+    std::ostringstream* out = new std::ostringstream();
+    (*out) << "{";
+    for ( int index = 0; index < this->getSize(); index++ ) {
+        (*out) << (*this)[index] << " ";
+    }
+    (*out) << "}";
+    return (*out).str();
+}
