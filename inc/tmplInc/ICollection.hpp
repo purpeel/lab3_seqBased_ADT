@@ -3,7 +3,10 @@
 
 #include "Sequence.hpp"
 #include "util.hpp"
-#include "person.hpp"
+#include "../types/person.hpp"
+#include "../types/int.hpp"
+#include "../types/double.hpp"
+#include "../types/string.hpp"
 #include <tuple>
 #include <type_traits>
 

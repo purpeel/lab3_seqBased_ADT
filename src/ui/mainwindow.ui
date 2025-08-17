@@ -375,6 +375,19 @@
            <height>31</height>
           </rect>
          </property>
+         <property name="currentText">
+          <string>map: double()</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>map: double()</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>map: sign()</string>
+          </property>
+         </item>
         </widget>
         <widget class="QComboBox" name="whereFunc">
          <property name="geometry">
@@ -384,6 +397,9 @@
            <width>101</width>
            <height>31</height>
           </rect>
+         </property>
+         <property name="currentText">
+          <string>where:isEven()</string>
          </property>
          <item>
           <property name="text">

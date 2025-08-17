@@ -1,5 +1,5 @@
 #include "mainwindow.hpp"
-#include "./ui_mainwindow.h"
+#include "../../build/lab3_qt_autogen/include/ui_mainwindow.h"
 #include <regex>
 #include <sstream>
 
@@ -42,12 +42,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete ui;
     for (int i = 0; i < ui->seqList->count(); ++i) {
         auto* item = ui->seqList->item(i);
         auto tuple = item->data(Qt::UserRole).value<SequenceTuple>();
         delete tuple;
     }
+    delete ui;
 }
 
 void MainWindow::showError( const std::exception &ex ) {
@@ -336,22 +336,26 @@ void MainWindow::on_setAtBtn_clicked()
             if (!ui->isImmutable->isChecked()) {
                 if ( clct->typeId == VarType::INT ) { 
 
-                    tuple->get<int>()->setAt( getFromInput<int>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    tuple->get<int>()->setAt( getFromInput<int>( ui->valueInput->text() ),
+                                              getFromInput<int>( ui->index1Input->text() ) );
                     item->setText( QString::fromStdString( tuple->getCollection()->print()) );
 
                 } else if ( clct->typeId == VarType::DOUBLE ) { 
 
-                    tuple->get<double>()->setAt( getFromInput<double>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    tuple->get<double>()->setAt( getFromInput<double>( ui->valueInput->text() ),
+                                                 getFromInput<int>( ui->index1Input->text() ) );
                     item->setText( QString::fromStdString( tuple->getCollection()->print()) );
 
                 } else if ( clct->typeId == VarType::PERSON ) {
 
-                    tuple->get<Person>()->setAt( getFromInput<Person>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    tuple->get<Person>()->setAt( getFromInput<Person>( ui->valueInput->text() ), 
+                                                 getFromInput<int>( ui->index1Input->text() ) );
                     item->setText( QString::fromStdString( tuple->getCollection()->print()) );
 
                 } else if ( clct->typeId == VarType::STRING ) {
 
-                    tuple->get<std::string>()->setAt( getFromInput<std::string>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    tuple->get<std::string>()->setAt( getFromInput<std::string>( ui->valueInput->text() ), 
+                                                      getFromInput<int>( ui->index1Input->text() ) );
                     item->setText( QString::fromStdString( tuple->getCollection()->print()) );
 
                 } else { throw Exception( Exception::ErrorCode::INVALID_TYPE ); }
@@ -359,25 +363,29 @@ void MainWindow::on_setAtBtn_clicked()
                 ICollectionTuple<Sequence, int, double, Person, std::string>* changedTuple;
                 if ( clct->typeId == VarType::INT ) {
 
-                    auto seq = tuple->get<int>()->setAtImmutable( getFromInput<int>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    auto seq = tuple->get<int>()->setAtImmutable( getFromInput<int>( ui->valueInput->text() ),
+                                                                  getFromInput<int>( ui->index1Input->text() ) );
                     changedTuple = WrapFactory::enwrap<int>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::DOUBLE ) {
 
-                    auto seq = tuple->get<double>()->setAtImmutable( getFromInput<double>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    auto seq = tuple->get<double>()->setAtImmutable( getFromInput<double>( ui->valueInput->text() ), 
+                                                                     getFromInput<int>( ui->index1Input->text() ) );
                     changedTuple = WrapFactory::enwrap<double>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::PERSON ) {
 
-                    auto seq = tuple->get<Person>()->setAtImmutable( getFromInput<Person>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    auto seq = tuple->get<Person>()->setAtImmutable( getFromInput<Person>( ui->valueInput->text() ),
+                                                                     getFromInput<int>( ui->index1Input->text() ) );
                     changedTuple = WrapFactory::enwrap<Person>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::STRING ) {
 
-                    auto seq = tuple->get<std::string>()->setAtImmutable( getFromInput<std::string>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    auto seq = tuple->get<std::string>()->setAtImmutable( getFromInput<std::string>( ui->valueInput->text() ), 
+                                                                          getFromInput<int>( ui->index1Input->text() ) );
                     changedTuple = WrapFactory::enwrap<std::string>(seq);
                     addToList(*changedTuple);
 
@@ -408,48 +416,55 @@ void MainWindow::on_insertAtBtn_clicked()
             if (!ui->isImmutable->isChecked()) {
                 if ( clct->typeId == VarType::INT ) { 
 
-                    tuple->get<int>()->insertAt( getFromInput<int>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
-                    item->setText( QString::fromStdString( tuple->getCollection()->print()) );
+                    tuple->get<int>()->insertAt( getFromInput<int>( ui->valueInput->text() ), 
+                                                 getFromInput<int>( ui->index1Input->text() ) );
 
                 } else if ( clct->typeId == VarType::DOUBLE ) { 
 
-                    tuple->get<double>()->insertAt( getFromInput<double>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
-                    item->setText( QString::fromStdString( tuple->getCollection()->print()) );
+                    tuple->get<double>()->insertAt( getFromInput<double>( ui->valueInput->text() ), 
+                                                    getFromInput<int>( ui->index1Input->text() ) );
 
                 } else if ( clct->typeId == VarType::PERSON ) {
 
-                    tuple->get<Person>()->insertAt( getFromInput<Person>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
-                    item->setText( QString::fromStdString( tuple->getCollection()->print()) );
+                    tuple->get<Person>()->insertAt( getFromInput<Person>( ui->valueInput->text() ), 
+                                                    getFromInput<int>( ui->index1Input->text() ) );
 
                 } else if ( clct->typeId == VarType::STRING ) {
 
-                    tuple->get<std::string>()->insertAt( getFromInput<std::string>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
-                    item->setText( QString::fromStdString( tuple->getCollection()->print()) );
+                    tuple->get<std::string>()->insertAt( getFromInput<std::string>( ui->valueInput->text() ), 
+                                                         getFromInput<int>( ui->index1Input->text() ) );
 
                 } else { throw Exception( Exception::ErrorCode::INVALID_TYPE ); }
+
+                item->setText( QString::fromStdString( tuple->getCollection()->print()) );
+
             } else {
                 ICollectionTuple<Sequence, int, double, Person, std::string>* changedTuple;
                 if ( clct->typeId == VarType::INT ) {
 
-                    auto seq = tuple->get<int>()->insertAtImmutable( getFromInput<int>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    auto seq = tuple->get<int>()->insertAtImmutable( getFromInput<int>( ui->valueInput->text() ), 
+                                                                     getFromInput<int>( ui->index1Input->text() ) );
                     changedTuple = WrapFactory::enwrap<int>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::DOUBLE ) {
 
-                    auto seq = tuple->get<double>()->insertAtImmutable( getFromInput<double>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    auto seq = tuple->get<double>()->insertAtImmutable( getFromInput<double>( ui->valueInput->text() ),
+                                                                        getFromInput<int>( ui->index1Input->text() ) );
                     changedTuple = WrapFactory::enwrap<double>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::PERSON ) {
 
-                    auto seq = tuple->get<Person>()->insertAtImmutable( getFromInput<Person>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    auto seq = tuple->get<Person>()->insertAtImmutable( getFromInput<Person>( ui->valueInput->text() ), 
+                                                                        getFromInput<int>( ui->index1Input->text() ) );
                     changedTuple = WrapFactory::enwrap<Person>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::STRING ) {
 
-                    auto seq = tuple->get<std::string>()->insertAtImmutable( getFromInput<std::string>( ui->valueInput->text() ), getFromInput<int>( ui->index1Input->text() ) );
+                    auto seq = tuple->get<std::string>()->insertAtImmutable( getFromInput<std::string>( ui->valueInput->text() ), 
+                                                                             getFromInput<int>( ui->index1Input->text() ) );
                     changedTuple = WrapFactory::enwrap<std::string>(seq);
                     addToList(*changedTuple);
 
@@ -480,22 +495,26 @@ void MainWindow::on_swapBtn_clicked()
             if (!ui->isImmutable->isChecked()) {
                 if ( clct->typeId == VarType::INT ) { 
 
-                    tuple->get<int>()->swap( getFromInput<int>( ui->index1Input->text() ), getFromInput<int>( ui->index2Input->text() ) );
+                    tuple->get<int>()->swap( getFromInput<int>( ui->index1Input->text() ), 
+                                             getFromInput<int>( ui->index2Input->text() ) );
                     item->setText( QString::fromStdString( tuple->getCollection()->print()) );
 
                 } else if ( clct->typeId == VarType::DOUBLE ) { 
 
-                    tuple->get<double>()->swap( getFromInput<int>( ui->index1Input->text() ), getFromInput<int>( ui->index2Input->text() ) );
+                    tuple->get<double>()->swap( getFromInput<int>( ui->index1Input->text() ), 
+                                                getFromInput<int>( ui->index2Input->text() ) );
                     item->setText( QString::fromStdString( tuple->getCollection()->print()) );
 
                 } else if ( clct->typeId == VarType::PERSON ) {
 
-                    tuple->get<Person>()->swap( getFromInput<int>( ui->index1Input->text() ), getFromInput<int>( ui->index2Input->text() ) );
+                    tuple->get<Person>()->swap( getFromInput<int>( ui->index1Input->text() ), 
+                                                getFromInput<int>( ui->index2Input->text() ) );
                     item->setText( QString::fromStdString( tuple->getCollection()->print()) );
 
                 } else if ( clct->typeId == VarType::STRING ) {
 
-                    tuple->get<std::string>()->swap( getFromInput<int>( ui->index1Input->text() ), getFromInput<int>( ui->index2Input->text() ) );
+                    tuple->get<std::string>()->swap( getFromInput<int>( ui->index1Input->text() ), 
+                                                     getFromInput<int>( ui->index2Input->text() ) );
                     item->setText( QString::fromStdString( tuple->getCollection()->print()) );
 
                 } else { throw Exception( Exception::ErrorCode::INVALID_TYPE ); }
@@ -503,25 +522,29 @@ void MainWindow::on_swapBtn_clicked()
                 ICollectionTuple<Sequence, int, double, Person, std::string>* changedTuple;
                 if ( clct->typeId == VarType::INT ) {
 
-                    auto seq = tuple->get<int>()->swapImmutable( getFromInput<int>( ui->index1Input->text() ), getFromInput<int>( ui->index2Input->text() ) );
+                    auto seq = tuple->get<int>()->swapImmutable( getFromInput<int>( ui->index1Input->text() ), 
+                                                                 getFromInput<int>( ui->index2Input->text() ) );
                     changedTuple = WrapFactory::enwrap<int>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::DOUBLE ) {
 
-                    auto seq = tuple->get<double>()->swapImmutable( getFromInput<int>( ui->index1Input->text() ), getFromInput<int>( ui->index2Input->text() ) );
+                    auto seq = tuple->get<double>()->swapImmutable( getFromInput<int>( ui->index1Input->text() ), 
+                                                                    getFromInput<int>( ui->index2Input->text() ) );
                     changedTuple = WrapFactory::enwrap<double>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::PERSON ) {
 
-                    auto seq = tuple->get<Person>()->swapImmutable( getFromInput<int>( ui->index1Input->text() ), getFromInput<int>( ui->index2Input->text() ) );
+                    auto seq = tuple->get<Person>()->swapImmutable( getFromInput<int>( ui->index1Input->text() ), 
+                                                                    getFromInput<int>( ui->index2Input->text() ) );
                     changedTuple = WrapFactory::enwrap<Person>(seq);
                     addToList(*changedTuple);
 
                 } else if ( clct->typeId == VarType::STRING ) {
 
-                    auto seq = tuple->get<std::string>()->swapImmutable( getFromInput<int>( ui->index1Input->text() ), getFromInput<int>( ui->index2Input->text() ) );
+                    auto seq = tuple->get<std::string>()->swapImmutable( getFromInput<int>( ui->index1Input->text() ), 
+                                                                         getFromInput<int>( ui->index2Input->text() ) );
                     changedTuple = WrapFactory::enwrap<std::string>(seq);
                     addToList(*changedTuple);
 
@@ -737,5 +760,130 @@ T MainWindow::getFromInput( const QString &input ) const {
         return value;
     } catch ( Exception &ex ) {
         throw Exception( Exception::ErrorCode::INVALID_INPUT );
+    }
+}
+
+void MainWindow::on_mapBtn_clicked() 
+{
+    try {
+        QListWidgetItem* item = ui->seqList->item(ui->seqList->currentRow());
+        if (item) {
+            auto tuple = item->data(Qt::UserRole).value<SequenceTuple>();
+            auto clct = tuple->getCollection();
+
+            if (!ui->isImmutable->isChecked()) {
+                if ( clct->typeId == VarType::INT ) {
+
+                    if ( ui->mapFunc->currentIndex() == mapFunc::DOUBLEUP ) {
+                        tuple->get<int>()->map( doubleUp );
+                    } else if ( ui->mapFunc->currentIndex() == mapFunc::SIGN ) {
+                        tuple->get<int>()->map( sign );
+                    }
+
+                } else if ( clct->typeId == VarType::DOUBLE ) {
+
+                    if ( ui->mapFunc->currentIndex() == mapFunc::DOUBLEUP ) {
+                        tuple->get<double>()->map( doubleUp );
+                    } else if ( ui->mapFunc->currentIndex() == mapFunc::SIGN ) {
+                        tuple->get<double>()->map( sign );
+                    }
+
+                } else if ( clct->typeId == VarType::PERSON ) {
+
+                    if ( ui->mapFunc->currentIndex() == mapFunc::DOUBLEUP ) {
+                        tuple->get<Person>()->map( doubleUp );
+                    } else if ( ui->mapFunc->currentIndex() == mapFunc::SIGN ) {
+                        tuple->get<Person>()->map( sign );
+                    }
+
+                } else if ( clct->typeId == VarType::STRING ) {
+
+                    if ( ui->mapFunc->currentIndex() == mapFunc::DOUBLEUP ) {
+                        tuple->get<std::string>()->map( doubleUp );
+                    } else if ( ui->mapFunc->currentIndex() == mapFunc::SIGN ) {
+                        tuple->get<std::string>()->map( sign );
+                    }
+
+                } else {
+                    throw Exception( Exception::ErrorCode::INVALID_TYPE ); 
+                }
+
+                item->setText( QString::fromStdString( tuple->getCollection()->print()) );
+                
+            } else {
+                ICollectionTuple<Sequence, int, double, Person, std::string>* changedTuple;
+                if ( clct->typeId == VarType::INT ) {
+
+                    if ( ui->mapFunc->currentIndex() == mapFunc::DOUBLEUP ) {
+
+                        auto seq = tuple->get<int>()->mapImmutable( doubleUp );
+                        changedTuple = WrapFactory::enwrap<int>(seq);
+                        addToList(*changedTuple);
+
+                    } else if ( ui->mapFunc->currentIndex() == mapFunc::SIGN ) {
+
+                        auto seq = tuple->get<int>()->mapImmutable( sign );
+                        changedTuple = WrapFactory::enwrap<int>(seq);
+                        addToList(*changedTuple);
+                        
+                    }
+
+                } else if ( clct->typeId == VarType::DOUBLE ) {
+
+                    if ( ui->mapFunc->currentIndex() == mapFunc::DOUBLEUP ) {
+
+                        auto seq = tuple->get<double>()->mapImmutable( doubleUp );
+                        changedTuple = WrapFactory::enwrap<double>(seq);
+                        addToList(*changedTuple);
+
+                    } else if ( ui->mapFunc->currentIndex() == mapFunc::SIGN ) {
+
+                        auto seq = tuple->get<double>()->mapImmutable( sign );
+                        changedTuple = WrapFactory::enwrap<double>(seq);
+                        addToList(*changedTuple);
+                        
+                    }
+
+                } else if ( clct->typeId == VarType::PERSON ) {
+
+                    if ( ui->mapFunc->currentIndex() == mapFunc::DOUBLEUP ) {
+
+                        auto seq = tuple->get<Person>()->mapImmutable( doubleUp );
+                        changedTuple = WrapFactory::enwrap<Person>(seq);
+                        addToList(*changedTuple);
+
+                    } else if ( ui->mapFunc->currentIndex() == mapFunc::SIGN ) {
+
+                        auto seq = tuple->get<Person>()->mapImmutable( sign );
+                        changedTuple = WrapFactory::enwrap<Person>(seq);
+                        addToList(*changedTuple);
+                        
+                    }
+
+                } else if ( clct->typeId == VarType::STRING ) {
+
+                    if ( ui->mapFunc->currentIndex() == mapFunc::DOUBLEUP ) {
+
+                        auto seq = tuple->get<std::string>()->mapImmutable( doubleUp );
+                        changedTuple = WrapFactory::enwrap<std::string>(seq);
+                        addToList(*changedTuple);
+
+                    } else if ( ui->mapFunc->currentIndex() == mapFunc::SIGN ) {
+
+                        auto seq = tuple->get<std::string>()->mapImmutable( sign );
+                        changedTuple = WrapFactory::enwrap<std::string>(seq);
+                        addToList(*changedTuple);
+                        
+                    }
+
+                } else {
+                    throw Exception( Exception::ErrorCode::INVALID_TYPE ); 
+                }
+            }
+        } else {
+            throw Exception( Exception::ErrorCode::INVALID_SELECTION ) ;
+        }
+    } catch ( Exception &ex ) {
+        showError(Exception(ex));
     }
 }

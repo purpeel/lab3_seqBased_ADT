@@ -66,4 +66,15 @@ enum VarType
     PERSON
 };
 
+enum mapFunc
+{
+    DOUBLEUP,
+    SIGN
+};
+
+enum whereFunc
+{
+    IS_EVEN
+};
+
 #endif // SEQUENCE_H

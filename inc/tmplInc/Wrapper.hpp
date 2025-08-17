@@ -1,11 +1,9 @@
 #ifndef SEQWRAP_H
 #define SEQWRAP_H
 
-#include <iostream>
 #include <string>
 #include "ICollection.hpp"
 #include "Sequence.hpp"
-#include "person.hpp"
 
 template <typename T>
 class ISequence : public ICollection
@@ -78,8 +76,5 @@ public:
 };
 
 using SequenceTuple = ICollectionTuple<Sequence, int, double, Person, std::string>*;
-
-
-
 
 #endif // SEQWRAP_H

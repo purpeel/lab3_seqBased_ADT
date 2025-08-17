@@ -36,7 +36,7 @@ private slots:
     void on_copyBtn_clicked();
     void on_concatBtn_clicked();
     void on_subSeqBtn_clicked();
-    // void on_mapBtn_clicked();
+    void on_mapBtn_clicked();
     // void on_whereBtn_clicked();
     // void on_foldlBtn_clicked();
     // void on_foldrBtn_clicked();
