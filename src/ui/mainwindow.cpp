@@ -887,3 +887,97 @@ void MainWindow::on_mapBtn_clicked()
         showError(Exception(ex));
     }
 }
+
+
+void MainWindow::on_whereBtn_clicked() 
+{
+    try {
+        QListWidgetItem* item = ui->seqList->item(ui->seqList->currentRow());
+        if (item) {
+            auto tuple = item->data(Qt::UserRole).value<SequenceTuple>();
+            auto clct = tuple->getCollection();
+
+            if (!ui->isImmutable->isChecked()) {
+                if ( clct->typeId == VarType::INT ) {
+
+                    if ( ui->mapFunc->currentIndex() == whereFunc::IS_EVEN ) {
+                        tuple->get<int>()->where( isEven );
+                    }
+
+                } else if ( clct->typeId == VarType::DOUBLE ) {
+
+                    if ( ui->mapFunc->currentIndex() == whereFunc::IS_EVEN ) {
+                        tuple->get<double>()->where( isEven );
+                    }
+
+                } else if ( clct->typeId == VarType::PERSON ) {
+
+                    if ( ui->mapFunc->currentIndex() == whereFunc::IS_EVEN ) {
+                        tuple->get<Person>()->where( isEven );
+                    }
+
+                } else if ( clct->typeId == VarType::STRING ) {
+
+                    if ( ui->mapFunc->currentIndex() == whereFunc::IS_EVEN ) {
+                        tuple->get<std::string>()->where( isEven );
+                    }
+
+                } else {
+                    throw Exception( Exception::ErrorCode::INVALID_TYPE ); 
+                }
+
+                item->setText( QString::fromStdString( tuple->getCollection()->print()) );
+                
+            } else {
+                ICollectionTuple<Sequence, int, double, Person, std::string>* changedTuple;
+                if ( clct->typeId == VarType::INT ) {
+
+                    if ( ui->mapFunc->currentIndex() == whereFunc::IS_EVEN ) {
+
+                        auto seq = tuple->get<int>()->whereImmutable( isEven );
+                        changedTuple = WrapFactory::enwrap<int>(seq);
+                        addToList(*changedTuple);
+
+                    }
+
+                } else if ( clct->typeId == VarType::DOUBLE ) {
+
+                    if ( ui->mapFunc->currentIndex() == whereFunc::IS_EVEN ) {
+
+                        auto seq = tuple->get<double>()->whereImmutable( isEven );
+                        changedTuple = WrapFactory::enwrap<double>(seq);
+                        addToList(*changedTuple);
+
+                    }
+
+                } else if ( clct->typeId == VarType::PERSON ) {
+
+                    if ( ui->mapFunc->currentIndex() == whereFunc::IS_EVEN ) {
+
+                        auto seq = tuple->get<Person>()->whereImmutable( isEven );
+                        changedTuple = WrapFactory::enwrap<Person>(seq);
+                        addToList(*changedTuple);
+
+                    }
+
+                } else if ( clct->typeId == VarType::STRING ) {
+
+                    if ( ui->mapFunc->currentIndex() == whereFunc::IS_EVEN ) {
+
+                        auto seq = tuple->get<std::string>()->whereImmutable( isEven );
+                        changedTuple = WrapFactory::enwrap<std::string>(seq);
+                        addToList(*changedTuple);
+
+                    }
+
+                } else {
+                    throw Exception( Exception::ErrorCode::INVALID_TYPE ); 
+                }
+            }
+        } else {
+            throw Exception( Exception::ErrorCode::INVALID_SELECTION ) ;
+        }
+    } catch ( Exception &ex ) {
+        showError(Exception(ex));
+    }
+}
